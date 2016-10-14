@@ -3,8 +3,7 @@ Type: Package
 Title: eQTL detection from a transcriptome reference
 Version: 1.0
 Date: 2016-10-13
-Author: Noah Rose
-Maintainer: noahrose@stanford.edu
+Authors@R: person("Noah", "Rose", email = "noahrose@stanford.edu", role = c("aut", "cre"))
 Description: A simple pipeline that takes a freebayes vcf file of biallelic SNPs and an 
 	expression matrix in DESeq format and uses two different tests to detect eQTLs.
 	First, we test for allelic imbalance in heterozygous individuals using DESeq2.
