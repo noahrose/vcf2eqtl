@@ -15,7 +15,7 @@ Description: A simple pipeline that takes a freebayes vcf file of biallelic SNPs
 	and the proportion of population difference in expression explained by eQTLs can be 
 	calculated. In addition, functions for plotting expression associations, allelic imbalance,
 	and allele distributions between populations are provided.
-Imports:
+Depends:
 	MASS,
 	VariantAnnotation,
 	parallel,
