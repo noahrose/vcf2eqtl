@@ -6,7 +6,8 @@
 
 
 ###Call variants with freebayes and filter for biallelic SNPs
-```freebayes -f ref.fa *.bam > fb.vcf
+```
+freebayes -f ref.fa *.bam > fb.vcf
 vcffilter -f "TYPE = snp & QUAL > 30 & AF > 0.1 & AF < 0.9 & NUMALT = 1" -g "DP > 10" fb.vcf \
 | vcfnulldotslashdot \
 | fix_freebayes_snps.py \
@@ -26,7 +27,8 @@ vcffilter -f "TYPE = snp & QUAL > 30 & AF > 0.1 & AF < 0.9 & NUMALT = 1" -g "DP 
 
 ###Then load into R
 
-```expr <- read.delim('expr.txt',row.names=1)
+```
+expr <- read.delim('expr.txt',row.names=1)
 vcf <- 'biallelic_snps.vcf'
 metadata<-read.delim('meta.txt')
 pops=metadata$pops
