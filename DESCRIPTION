@@ -4,17 +4,18 @@ Title: eQTL detection from a transcriptome reference
 Version: 1.0
 Date: 2016-10-13
 Authors@R: person("Noah", "Rose", email = "noahrose@stanford.edu", role = c("aut", "cre"))
-Description: A simple pipeline that takes a freebayes VCF file of biallelic SNPs and an 
+Description: A simple pipeline that takes a freebayes vcf file of biallelic SNPs and an 
 	expression matrix in DESeq format and uses two different tests to detect eQTLs.
 	First, we test for allelic imbalance in heterozygous individuals using DESeq2.
 	Overdispersion in read counts is modeled by testing all sites with a given number of
-	heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log-transform
+	heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log transform
 	and calculate precision weights for expression values and use lm to test for associations
-	between genotype and expression. P-values are calculated using Stouffer's method.
+	between genotype and expression. P values are calculated using Stouffer's method.
 	Fst and Fst outliers (OutFLANK), Differential expression between populations (DESeq2), 
 	and the proportion of population difference in expression explained by eQTLs can be 
 	calculated. In addition, functions for plotting expression associations, allelic imbalance,
 	and allele distributions between populations are provided.
+<<<<<<< HEAD
 License: MIT License
 Imports:
 	DESeq2,
@@ -26,3 +27,6 @@ Imports:
 Suggests:
 	OutFLANK,
 	HardyWeinberg,
+=======
+License: MIT License
+>>>>>>> parent of 5a79f5e... rd file
