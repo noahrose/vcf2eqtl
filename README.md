@@ -15,7 +15,6 @@ install_github('noahrose/vcf2eqtl')
 freebayes -f ref.fa *.bam > fb.vcf
 vcffilter -f "TYPE = snp & QUAL > 30 & AF > 0.1 & AF < 0.9 & NUMALT = 1" -g "DP > 10" fb.vcf \
 | vcfnulldotslashdot \
-| fix_freebayes_snps.py \
 | grep -vF './.' \
 > biallelic_snps.vcf
 ```
