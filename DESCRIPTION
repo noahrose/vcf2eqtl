@@ -16,14 +16,3 @@ Description: A simple pipeline that takes a freebayes vcf file of biallelic SNPs
 	calculated. In addition, functions for plotting expression associations, allelic imbalance,
 	and allele distributions between populations are provided.
 License: MIT License
-Imports:
-	DESeq2,
-	MASS,
-	VariantAnnotation,
-	parallel,
-	DESeq2,
-	limma,
-Suggests:
-	OutFLANK,
-	HardyWeinberg,
-License: MIT License
