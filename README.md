@@ -8,6 +8,7 @@
 ```R
 library(devtools)
 install_github('noahrose/vcf2eqtl')
+```
 
 ###Call variants with freebayes and filter for biallelic SNPs
 ```
