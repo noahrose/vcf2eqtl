@@ -90,10 +90,6 @@ If you have a good genome and phased data, more powerful methods like WASP will 
 outperform this function.
 }
 
-res = res, snpContigExpr = currexpr, genos = genos, 
-        AImat = AImat, AIdat = AIdat, globalFst = globalFst, 
-        pops = pops, DEres = DEres
-
 \value{
   \item{res} data frame of SNPs with eQTL status and other info (as specified) like Fst etc
   \item{snpContigExpr} voom-transformed expression for contig associated with each test SNP
