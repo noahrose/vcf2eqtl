@@ -1,9 +1,40 @@
 Package: vcf2eqtl
 Type: Package
-Title: What the package does (short line)
+Title: eQTL detection from a transcriptome reference
 Version: 1.0
 Date: 2016-10-13
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Noah Rose
+Maintainer: noahrose@stanford.edu
+Description: A simple pipeline that takes a freebayes vcf file of biallelic SNPs and an 
+expression matrix in DESeq format and uses two different tests to detect eQTLs.
+First, we test for allelic imbalance in heterozygous individuals using DESeq2.
+Overdispersion in read counts is modeled by testing all sites with a given number of
+heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log transform
+and calculate precision weights for expression values and use lm to test for associations
+between genotype and expression. P values are calculated using Stouffer's method.
+Fst and Fst outliers (OutFLANK), Differential expression between populations (DESeq2), 
+and the proportion of population difference in expression explained by eQTLs can be 
+calculated. In addition, functions for plotting expression associations, allelic imbalance,
+and allele distributions between populations are provided.
+
+MIT License
+
+Copyright (c) 2016 Noah Rose
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

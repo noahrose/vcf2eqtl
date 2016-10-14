@@ -1,257 +1,128 @@
 \name{vcf2eqtl}
 \alias{vcf2eqtl}
-%- Also NEED an '\alias' for EACH other topic documented here.
+\alias{associationTest}
+\alias{DEbin}
+\alias{flattenOutput}
+\alias{imbalanceTest}
+\alias{make012}
+\alias{makeHierfstat}
+\alias{plotAssociation}
+\alias{plotCline}
+\alias{plotImbalance}
+\alias{plotQTL}
+\alias{propExplan}
+\alias{vcf2eqtl-package}
+
 \title{
-%%  ~~function to do ... ~~
+Function to detect eQTLs using vcf and expression matrix from a transcriptome reference
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+A simple pipeline that takes a freebayes vcf file of biallelic SNPs and an 
+expression matrix in DESeq format and uses two different tests to detect eQTLs.
+First, we test for allelic imbalance in heterozygous individuals using DESeq2.
+Overdispersion in read counts is modeled by testing all sites with a given number of
+heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log transform
+and calculate precision weights for expression values and use lm to test for associations
+between genotype and expression. P values are calculated using Stouffer's method.
+Fst and Fst outliers (OutFLANK), Differential expression between populations (DESeq2), 
+and the proportion of population difference in expression explained by eQTLs can be 
+calculated.
 }
 \usage{
 vcf2eqtl(vcf, expr, pops = NULL, minHet = 3, mc.cores = 1, alpha = 0.05, calculateFst = T, testDE = F, all3 = T, hweFilter = T, hweAlpha = 0.05, covariates = NULL, propExplained = T, withinPop = T, transcripts = NULL, keepSamples = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{vcf}{
-%%     ~~Describe \code{vcf} here~~
+A freebayes-generated vcf of biallelic SNPs from RNA-Seq reads mapped to a transcriptome reference
 }
   \item{expr}{
-%%     ~~Describe \code{expr} here~~
+An expression matrix, same format as DESeq. Rows are contigs, Columns are samples (same order as in vcf), rownames are contig names
 }
   \item{pops}{
-%%     ~~Describe \code{pops} here~~
+A factor vector of which population each sample belongs to
 }
   \item{minHet}{
-%%     ~~Describe \code{minHet} here~~
+Minimum number of heterozygotes to test for allelic imbalance
 }
   \item{mc.cores}{
-%%     ~~Describe \code{mc.cores} here~~
+Number of cores to use for multithreading
 }
   \item{alpha}{
-%%     ~~Describe \code{alpha} here~~
+FDR for calling eQTLs and differential expression
 }
   \item{calculateFst}{
-%%     ~~Describe \code{calculateFst} here~~
+Boolean; do you want to calculate Fst?
 }
   \item{testDE}{
-%%     ~~Describe \code{testDE} here~~
+Boolean; test for differential expression between pops? Uses DeSeq2 LRT
 }
   \item{all3}{
-%%     ~~Describe \code{all3} here~~
+Boolean; require all three genotypes to test for eQTL at a site?
 }
   \item{hweFilter}{
-%%     ~~Describe \code{hweFilter} here~~
+Boolean; filter out sites out of Hardy-Weinberg equilibrium?
 }
   \item{hweAlpha}{
-%%     ~~Describe \code{hweAlpha} here~~
+HWE P value in at least one population to filter out site
 }
   \item{covariates}{
-%%     ~~Describe \code{covariates} here~~
+Matrix of covariates to include in association test
 }
   \item{propExplained}{
-%%     ~~Describe \code{propExplained} here~~
+Boolean; calculate proportion of population difference in expression explained by eQTL?
 }
   \item{withinPop}{
-%%     ~~Describe \code{withinPop} here~~
+Boolean; do association tests within populations to account for population structure?
 }
   \item{transcripts}{
-%%     ~~Describe \code{transcripts} here~~
+Boolean; list of transcripts that each site falls into; useful if you mapped to a genome.
+However, if you mapped to a genome, better tools may exist (e.g. WASP) to test for eQTLs.
 }
   \item{keepSamples}{
-%%     ~~Describe \code{keepSamples} here~~
+Vector of sample names to retain for analysis, assumes that your pops vector corresponds
+to post-filtered samples. Does not change sample order for retained samples.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+This function is useful for finding eQTLs among biallelic SNPs in RNA-Seq data mapped to
+a transcriptome reference, and is most useful for less-resouced non-model organisms.
+If you have a good genome and phased data, more powerful methods like WASP will likely
+outperform this function.
 }
+
+res = res, snpContigExpr = currexpr, genos = genos, 
+        AImat = AImat, AIdat = AIdat, globalFst = globalFst, 
+        pops = pops, DEres = DEres
+
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\item{res} data frame of SNPs with eQTL status and other info (as specified) like Fst etc
+\item{snpContigExpr} voom-transformed expression for contig associated with each test SNP
+\item{genos} 012 matrix of genotypes
+\item{AImat} matrix of allele observations for ref and alt within heterozygotes
+\item{AIdat} vector of which columns in AImat are ref and alt
+\item{globalFst} globalFst estimate, if calculated
+\item{pops} population vector
+\item{DEres} results from DESeq2, if calculated
 }
 \references{
-%% ~put references to the literature/web site here ~
+Genomic responses to environmental variation and change in the ocean. PhD Dissertation,
+Noah Rose, Stanford University.
 }
 \author{
-%%  ~~who you are~~
+Noah Rose
 }
 \note{
-%%  ~~further notes~~
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (vcf, expr, pops = NULL, minHet = 3, mc.cores = 1, alpha = 0.05, 
-    calculateFst = T, testDE = F, all3 = T, hweFilter = T, hweAlpha = 0.05, 
-    covariates = NULL, propExplained = T, withinPop = T, transcripts = NULL, 
-    keepSamples = NULL) 
-{
-    if (is.null(pops)) {
-        calculateFst = F
-        testDE = F
-        propExplained = F
-        withinPop = F
-    }
-    globalFst = NULL
-    cat("reading vcf...\n")
-    currvcf <- suppressWarnings(readVcf(vcf, genome = "curr"))
-    genoInfo <- geno(currvcf)
-    genos <- make012(genoInfo$GT)
-    AOs <- apply(genoInfo$AO, 2, as.numeric)
-    ROs <- apply(genoInfo$RO, 2, as.numeric)
-    AOs[genos != 1] <- NA
-    ROs[genos != 1] <- NA
-    AImat <- cbind(ROs, AOs)
-    rownames(AImat) <- rownames(genos)
-    AIdat <- factor(c(rep("ref", ncol(genos)), rep("alt", ncol(genos))), 
-        levels = c("ref", "alt"))
-    CHROM = as.vector(seqnames(rowRanges(currvcf)))
-    POS = as.numeric(as.character(start(ranges(rowRanges(currvcf)))))
-    REF = as.character(mcols(rowRanges(currvcf))[, "REF"])
-    ALT = as.character(unlist(mcols(rowRanges(currvcf))[, "ALT"]))
-    AF = unlist(info(currvcf)$AF)
-    snpInfo <- cbind(CHROM, POS, REF, ALT, AF)
-    rownames(snpInfo) <- rownames(genos)
-    if (is.null(transcripts)) 
-        transcripts = CHROM
-    expr <- expr[rownames(expr) \%in\% transcripts, ]
-    voomExpr <- voom(expr)
-    rownames(voomExpr$weights) <- rownames(expr)
-    currexpr <- as.matrix(voomExpr$E[transcripts, ])
-    currweights <- as.matrix(voomExpr$weights[transcripts, ])
-    rownames(currexpr) <- rownames(genos)
-    rownames(currweights) <- rownames(genos)
-    if (!is.null(keepSamples)) {
-        cat("subsetting to only keep specified samples and assuming pops correspond to post-filtered samples...\n")
-        keep = colnames(genos) \%in\% keepSamples
-        expr <- expr[, keep]
-        currexpr <- currexpr[, keep]
-        currweights <- currweights[, keep]
-        AImat <- AImat[, rep(keep, 2)]
-        AIdat <- AIdat[keep]
-        genos <- genos[, keep]
-    }
-    if (all3) {
-        cat("filtering for sites with all three genotypes...\n")
-        num_gts <- apply(genos, 1, function(v) length(table(v)))
-        genos <- genos[num_gts == 3, ]
-    }
-    if (hweFilter) {
-        cat("filtering out sites out of HWE in at least one population...\n")
-        hwepops = pops
-        hwe = rep(1, nrow(genos))
-        if (is.null(pops)) 
-            hwepops = rep(1, ncol(genos))
-        for (pop in unique(hwepops)) {
-            hwe <- pmin(hwe, apply(genos[, which(pops == pop)], 
-                1, function(v) HWExact(table(factor(v, levels = c(0, 
-                  1, 2))), verbose = F)$pval))
-        }
-        genos <- genos[hwe > hweAlpha, ]
-    }
-    if (!is.null(minHet)) {
-        cat("filtering out sites with fewer than", minHet, "heterozygotes...\n")
-        numHet <- apply(genos, 1, function(v) length(which(v == 
-            1)))
-        genos <- genos[numHet >= minHet, ]
-    }
-    cat("filtering out sites without allele observations\n")
-    AImat <- AImat[rownames(genos), ]
-    imbalanceInfo <- apply(AImat, 1, function(v) any(!is.na(v)))
-    genos <- genos[rownames(AImat)[imbalanceInfo], ]
-    if (nrow(genos) == 0) {
-        stop("No sites left after filtering, check to make sure you have a freebayes VCF of biallelic SNPs with allele observations in it")
-    }
-    AImat <- AImat[rownames(genos), ]
-    currexpr <- currexpr[rownames(genos), ]
-    snpInfo <- snpInfo[rownames(genos), ]
-    cat(paste(nrow(genos), "sites left after filtering, testing for eQTL status...\n"))
-    cat("allelic imbalance test...\n")
-    imb.out <- imbalanceTest(AImat = AImat, AIdat = AIdat)
-    if (mc.cores == 1) {
-        cat("association test...\n")
-        assoc.out <- t(sapply(rownames(genos), associationTest, 
-            currexpr = currexpr, currweights = currweights, genos = genos, 
-            withinPop = withinPop))
-    }
-    else {
-        cat("mulithreaded association test...\n")
-        assoc.out <- do.call(rbind, mclapply(rownames(genos), 
-            associationTest, currexpr = currexpr, currweights = currweights, 
-            genos = genos, withinPop = withinPop, mc.cores = mc.cores))
-    }
-    res <- cbind(imb.out[, c("stat", "pvalue")], 2^imb.out$log2FoldChange, 
-        assoc.out)
-    colnames(res) <- c("AIz", "AIp", "AIfc", "ASSOCz", "ASSOCp", 
-        "ASSOCfc")
-    rownames(res) <- rownames(genos)
-    res <- as.data.frame(res)
-    res$z <- (res[, "AIz"] + res[, "ASSOCz"])/(2^0.5)
-    res$p <- sapply(res$z, function(val) min(pnorm(val, lower.tail = T), 
-        pnorm(val, lower.tail = F)) * 2)
-    res$padj <- p.adjust(res$p, method = "BH")
-    res$AIpadj <- p.adjust(res$AIp, method = "BH")
-    res$ASSOCpadj <- p.adjust(res$ASSOCp, method = "BH")
-    res$eQTL <- res$padj < alpha
-    res <- cbind(snpInfo, res)
-    res$REF <- as.character(res$REF)
-    res$ALT <- as.character(res$ALT)
-    res$POS <- as.numeric(as.character(res$POS))
-    if (calculateFst) {
-        cat("calculating Fst...\n")
-        wc.out <- MakeDiploidFSTMat(genos, rownames(genos), pops)
-        res$Fst = wc.out$FST
-        res$FstNum <- wc.out$T1
-        res$FstDen <- wc.out$T2
-        fl.out <- OutFLANK(wc.out)$results
-        globalFst = fl.out$FSTbar
-        res$FstOutlier = fl.out$OutlierFlag
-        res$FstOutlierP = fl.out$pvaluesRightTail
-    }
-    DEres = NULL
-    if (testDE) {
-        cat("testing for differential expression with DESeq2...\n")
-        currdat <- data.frame(pops = pops)
-        cds <- DESeqDataSetFromMatrix(expr, currdat, ~pops)
-        cds <- DESeq(cds, test = "LRT", reduced = ~1)
-        DEres <- results(cds)
-        res$DE <- DEres[res$CHROM, "padj"] < alpha
-        res$DEp <- DEres[res$CHROM, "pvalue"]
-        res$DEpadj <- DEres[res$CHROM, "padj"]
-    }
-    if (propExplained) {
-        cat("calculating proportion of population differences explained by eQTLs...\n")
-        if (mc.cores == 1) {
-            propE <- sapply(rownames(genos)[which(res$eQTL)], 
-                propExplain, currexpr = currexpr, genos = genos, 
-                pops = pops)
-        }
-        else {
-            cat("\tmulithreading...\n")
-            propE <- unlist(mclapply(rownames(genos)[which(res$eQTL)], 
-                propExplain, currexpr = currexpr, genos = genos, 
-                pops = pops, mc.cores = mc.cores))
-        }
-        res$popDiffExplained <- NA
-        res$popDiffExplained[which(res$eQTL)] = propE
-    }
-    return(list(res = res, snpContigExpr = currexpr, genos = genos, 
-        AImat = AImat, AIdat = AIdat, globalFst = globalFst, 
-        pops = pops, DEres = DEres))
-  }
+expr <- read.delim('expr.txt',row.names=1)
+vcf <- 'biallelic_snps.vcf'
+metadata<-read.delim('meta.txt')
+pops=metadata$pops
+vcf2eqtl(vcf,expr,pops)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{eQTL}
+\keyword{VCF}
