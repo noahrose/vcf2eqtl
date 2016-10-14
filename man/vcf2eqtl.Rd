@@ -91,14 +91,14 @@ outperform this function.
 }
 
 \value{
-  \item{res} data frame of SNPs with eQTL status and other info (as specified) like Fst etc
-  \item{snpContigExpr} voom-transformed expression for contig associated with each test SNP
-  \item{genos} 012 matrix of genotypes
-  \item{AImat} matrix of allele observations for ref and alt within heterozygotes
-  \item{AIdat} vector of which columns in AImat are ref and alt
-  \item{globalFst} globalFst estimate, if calculated
-  \item{pops} population vector
-  \item{DEres} results from DESeq2, if calculated
+  \item{res}data frame of SNPs with eQTL status and other info (as specified) like Fst etc
+  \item{snpContigExpr}voom-transformed expression for contig associated with each test SNP
+  \item{genos}012 matrix of genotypes
+  \item{AImat}matrix of allele observations for ref and alt within heterozygotes
+  \item{AIdat}vector of which columns in AImat are ref and alt
+  \item{globalFst}globalFst estimate, if calculated
+  \item{pops}population vector
+  \item{DEres}results from DESeq2, if calculated
 }
 \references{
 Genomic responses to environmental variation and change in the ocean. PhD Dissertation,
