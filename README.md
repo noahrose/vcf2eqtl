@@ -17,13 +17,13 @@ vcffilter -f "TYPE = snp & QUAL > 30 & AF > 0.1 & AF < 0.9 & NUMALT = 1" -g "DP 
 
 ###You will also need a gene expression counts matrix of the same format used for DESeq
 - Many ways to do this, including:
-..* samtools idxstats
-..* htseq-count
-..* Trinity/RSEM
-..* StringTie
-..* kallisto
-..* salmon
-..* etc...
+  * samtools idxstats
+  * htseq-count
+  * Trinity/RSEM
+  * StringTie
+  * kallisto
+  * salmon
+  * etc...
 
 ###Then load into R
 
