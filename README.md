@@ -6,6 +6,8 @@
 
 ##Install:
 ```R
+source("https://bioconductor.org/biocLite.R")
+biocLite(c('DESeq2','limma','VariantAnnotation'))
 library(devtools)
 install_github('noahrose/vcf2eqtl')
 ```
