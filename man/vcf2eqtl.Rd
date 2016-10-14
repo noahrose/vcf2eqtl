@@ -91,7 +91,7 @@ outperform this function.
 }
 
 \value{
-  \item{res}data frame of SNPs with eQTL status and other info (as specified) like Fst etc
+  \item{res}{data frame of SNPs with eQTL status and other info (as specified) like Fst etc}
   \item{snpContigExpr}voom-transformed expression for contig associated with each test SNP
   \item{genos}012 matrix of genotypes
   \item{AImat}matrix of allele observations for ref and alt within heterozygotes
