@@ -5,38 +5,45 @@
 \alias{flattenOutput}
 \alias{imbalanceTest}
 \alias{make012}
-\alias{makeHierfstat}
 \alias{plotAssociation}
 \alias{plotCline}
 \alias{plotImbalance}
 \alias{plotQTL}
-\alias{propExplan}
+\alias{propExplain}
 \alias{vcf2eqtl-package}
 
 \title{
 Function to detect eQTLs using vcf and expression matrix from a transcriptome reference
 }
 \description{
-A simple pipeline that takes a freebayes vcf file of biallelic SNPs and an 
+A simple pipeline that takes a freebayes VCF file of biallelic SNPs and an 
 expression matrix in DESeq format and uses two different tests to detect eQTLs.
+
 First, we test for allelic imbalance in heterozygous individuals using DESeq2.
 Overdispersion in read counts is modeled by testing all sites with a given number of
-heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log transform
+heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log-transform
 and calculate precision weights for expression values and use lm to test for associations
-between genotype and expression. P values are calculated using Stouffer's method.
+between genotype and expression. 
+
+P-values are calculated using Stouffer's method.
 Fst and Fst outliers (OutFLANK), Differential expression between populations (DESeq2), 
 and the proportion of population difference in expression explained by eQTLs can be 
 calculated.
 }
 \usage{
-vcf2eqtl(vcf, expr, pops = NULL, minHet = 3, mc.cores = 1, alpha = 0.05, calculateFst = T, testDE = F, all3 = T, hweFilter = T, hweAlpha = 0.05, covariates = NULL, propExplained = T, withinPop = T, transcripts = NULL, keepSamples = NULL)
+vcf2eqtl(vcf, expr, pops = NULL, minHet = 3,
+	mc.cores = 1, alpha = 0.05, calculateFst = T, 
+	testDE = F, all3 = T, hweFilter = T, hweAlpha = 0.05,
+	covariates = NULL, propExplained = T, withinPop = T, 
+	transcripts = NULL, keepSamples = NULL)
 }
 \arguments{
   \item{vcf}{
 A freebayes-generated vcf of biallelic SNPs from RNA-Seq reads mapped to a transcriptome reference
 }
   \item{expr}{
-An expression matrix, same format as DESeq. Rows are contigs, Columns are samples (same order as in vcf), rownames are contig names
+An expression matrix, same format as DESeq
+Rows are contigs, Columns are samples (same order as in vcf), rownames are contig names
 }
   \item{pops}{
 A factor vector of which population each sample belongs to
