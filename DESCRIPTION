@@ -17,12 +17,12 @@ Description: A simple pipeline that takes a freebayes VCF file of biallelic SNPs
 	and allele distributions between populations are provided.
 License: MIT License
 Imports:
-	DESeq2
-	MASS
-	VariantAnnotation
-	parallel
-	DESeq2
-	limma
+	DESeq2,
+	MASS,
+	VariantAnnotation,
+	parallel,
+	DESeq2,
+	limma,
 Suggests:
-	OutFLANK
-	HardyWeinberg
+	OutFLANK,
+	HardyWeinberg,
