@@ -4,6 +4,10 @@
 - The pipeline uses a simple counts matrix and VCF input file
 - Both of these file types are standard parts of RNA-Seq experiments
 
+##Install:
+```R
+library(devtools)
+install_github('noahrose/vcf2eqtl')
 
 ###Call variants with freebayes and filter for biallelic SNPs
 ```
