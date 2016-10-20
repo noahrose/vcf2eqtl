@@ -177,6 +177,5 @@ keepSamples=NULL){
 		res$popDiffExplained[which(res$eQTL)]=propE
 	}
 	
-	print(AIdat)
 	return(list(res=res,snpContigExpr=currexpr,genos=genos,AImat=AImat,AIdat=AIdat,globalFst=globalFst,pops=pops,DEres= DEres))
 }
