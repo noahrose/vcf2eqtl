@@ -144,7 +144,7 @@ keepSamples=NULL){
 		res$Fst=wc.out$FST
 		res$FstNum<-wc.out$T1
 		res$FstDen<-wc.out$T2
-		fl.out<-OutFLANK(wc.out)$results
+		fl.out<-OutFLANK(wc.out,NumberOfSamples=ncol(genos),qthreshold=alpha)$results
 		globalFst=fl.out$FSTbar
 		res$FstOutlier=fl.out$OutlierFlag
 		res$FstOutlierP=fl.out$pvaluesRightTail
