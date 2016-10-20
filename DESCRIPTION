@@ -23,4 +23,5 @@ Depends:
 	DESeq2,
 	limma,
 	OutFLANK,
+	S4Vectors,
 License: MIT License
