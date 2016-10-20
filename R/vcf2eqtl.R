@@ -38,7 +38,11 @@ keepSamples=NULL){
 
 	cat('organizing SNP info...\n')
 	#collect SNP metadata	
+	print(head(rowRanges(currvcf)))
+	print(head(seqnames(rowRanges(currvcf))))
+	print(head(as.vector(seqnames(rowRanges(currvcf)))))
 	CHROM=as.vector(seqnames(rowRanges(currvcf)))
+	cat('organizing SNP info more...\n')
 	POS=as.numeric(as.character(start(ranges(rowRanges(currvcf)))))
 	REF=as.character(mcols(rowRanges(currvcf))[,'REF'])
 	ALT=as.character(unlist(mcols(rowRanges(currvcf))[,'ALT']))
