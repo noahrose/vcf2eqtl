@@ -35,7 +35,6 @@ keepSamples=NULL){
 	AImat<-cbind(ROs,AOs)
 	rownames(AImat)<-rownames(genos)
 	AIdat<-factor(c(rep('ref',ncol(genos)),rep('alt',ncol(genos))),levels=c('ref','alt'))
-	print(AIdat)
 
 	cat('organizing SNP info...\n')
 	CHROM=as.vector(seqnames(rowRanges(currvcf)))
@@ -65,7 +64,7 @@ keepSamples=NULL){
 		currexpr<-currexpr[,keep]
 		currweights<-currweights[,keep]
 		AImat<-AImat[,rep(keep,2)]
-		AIdat<-AIdat[keep]
+		AIdat<-AIdat[rep(keep,2)]
 		genos<-genos[,keep]
 	}
 
