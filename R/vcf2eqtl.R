@@ -36,6 +36,7 @@ keepSamples=NULL){
 	rownames(AImat)<-rownames(genos)
 	AIdat<-factor(c(rep('ref',ncol(genos)),rep('alt',ncol(genos))),levels=c('ref','alt'))
 
+	cat('organizing SNP info...\n')
 	#collect SNP metadata	
 	CHROM=as.vector(seqnames(rowRanges(currvcf)))
 	POS=as.numeric(as.character(start(ranges(rowRanges(currvcf)))))
@@ -45,6 +46,7 @@ keepSamples=NULL){
 	snpInfo<-cbind(CHROM,POS,REF,ALT,AF)
 	rownames(snpInfo)<-rownames(genos)
 
+	cat('organizing expression data...\n')
 	#organize and normalize expression data
 	if(is.null(transcripts)) transcripts=CHROM
 	expr<-expr[rownames(expr)%in%transcripts,]
