@@ -35,6 +35,7 @@ keepSamples=NULL){
 	AImat<-cbind(ROs,AOs)
 	rownames(AImat)<-rownames(genos)
 	AIdat<-factor(c(rep('ref',ncol(genos)),rep('alt',ncol(genos))),levels=c('ref','alt'))
+	print(AIdat)
 
 	cat('organizing SNP info...\n')
 	CHROM=as.vector(seqnames(rowRanges(currvcf)))
@@ -177,5 +178,6 @@ keepSamples=NULL){
 		res$popDiffExplained[which(res$eQTL)]=propE
 	}
 	
+	print(AIdat)
 	return(list(res=res,snpContigExpr=currexpr,genos=genos,AImat=AImat,AIdat=AIdat,globalFst=globalFst,pops=pops,DEres= DEres))
 }
