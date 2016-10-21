@@ -6,6 +6,7 @@ minHet=3,
 mc.cores=1,
 alpha=0.05,
 calculateFst=T,
+outliers=T,
 testDE=F,
 all3=T,
 hweFilter=T,
@@ -144,10 +145,13 @@ keepSamples=NULL){
 		res$Fst=wc.out$FST
 		res$FstNum<-wc.out$T1
 		res$FstDen<-wc.out$T2
-		fl.out<-OutFLANK(wc.out,NumberOfSamples=ncol(genos),qthreshold=alpha)$results
-		globalFst=fl.out$FSTbar
-		res$FstOutlier=fl.out$OutlierFlag
-		res$FstOutlierP=fl.out$pvaluesRightTail
+		res$He<-wc.out$He
+		globalFst=sum(res$FstNum)/sum(res$FstDen)
+		if(outliers){
+			fl.out<-OutFLANK(wc.out,NumberOfSamples=ncol(genos),qthreshold=alpha)$results
+			res$FstOutlier=fl.out$OutlierFlag
+			res$FstOutlierP=fl.out$pvaluesRightTail
+		}
 	}
 	
 	#test for differential expression using DESeq2
