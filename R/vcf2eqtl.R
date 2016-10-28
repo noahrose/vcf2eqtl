@@ -34,6 +34,7 @@ keepSamples=NULL){
 	AOs[genos!=1]<-NA
 	ROs[genos!=1]<-NA
 	AImat<-cbind(ROs,AOs)
+	colnames(AImat)<-NULL
 	rownames(AImat)<-rownames(genos)
 	AIdat<-factor(c(rep('ref',ncol(genos)),rep('alt',ncol(genos))),levels=c('ref','alt'))
 

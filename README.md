@@ -7,7 +7,7 @@
 ##Install:
 ```R
 source("https://bioconductor.org/biocLite.R")
-biocLite(c('DESeq2','limma','VariantAnnotation','qvalue'))
+biocLite(c('devtools',DESeq2','limma','VariantAnnotation','qvalue'))
 library(devtools)
 install_github('whitlock/OutFLANK')
 install_github('noahrose/vcf2eqtl')
