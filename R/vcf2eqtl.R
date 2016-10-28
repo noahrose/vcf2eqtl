@@ -41,8 +41,8 @@ keepSamples=NULL){
 	CHROM=as.vector(seqnames(rowRanges(currvcf)))
 	POS=as.numeric(as.character(start(ranges(rowRanges(currvcf)))))
 	REF=as.character(mcols(rowRanges(currvcf))[,'REF'])
-	ALT=as.character(S4Vectors::unlist(mcols(rowRanges(currvcf))[,'ALT']))
-	AF=IRanges::unlist(info(currvcf)$AF)
+	ALT=as.character(unlist(mcols(rowRanges(currvcf))[,'ALT']))
+	AF=unlist(info(currvcf)$AF)
 	snpInfo<-cbind(CHROM,POS,REF,ALT,AF)
 	rownames(snpInfo)<-rownames(genos)
 
