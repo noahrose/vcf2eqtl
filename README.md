@@ -4,7 +4,7 @@
 - The pipeline uses a simple counts matrix and VCF input file
 - Both of these file types are standard parts of RNA-Seq experiments
 
-##Install:
+##Install (R 3.3.1 or greater):
 ```R
 source("https://bioconductor.org/biocLite.R")
 biocLite(c('devtools','DESeq2','limma','VariantAnnotation','qvalue'))
