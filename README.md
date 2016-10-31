@@ -29,8 +29,6 @@ cat fb.vcf \
   * htseq-count
   * Trinity/RSEM
   * StringTie
-  * kallisto
-  * salmon
   * etc...
 
 ###Then load into R
