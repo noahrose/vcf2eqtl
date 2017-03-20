@@ -12,7 +12,7 @@ function(output,curr,titles=T,plotLegend=T,legendPos=NULL,snpLab=NULL,usecol=NUL
 	if(!is.null(usecol)) {cols=usecol; plotLegend=F}
 	xlab=paste(currsnp$CHROM,'pos.', currsnp['POS'])
 	if(!is.null(snpLab)) xlab=snpLab
-	plot(ex~jitter(gt,0.5),col=cols,pch=19,axes=F, ylab='Log2 Normalized Counts', xlab=xlab,xlim=c(-.1,2.1))
+	plot(ex~jitter(gt,0.5),col=cols,pch=19,axes=F, ylab='Log2 CPM', xlab=xlab,xlim=c(-.1,2.1))
 	abline(lm(ex~gt),lwd=lwd,lty=lty)
 	axis(2)
 	legpos='topleft'
