@@ -16,7 +16,5 @@ function(curr,currexpr,currweights,genos,covariates=NULL,withinPop=T){
 		warning(paste('could not fit',curr,' -- skipping and returning NA...'))
 		return(rep(NA,3))
 	}
-	lm.res<-lm.out['gt',c('t value','Pr(>|t|)')]
-	fc=2^(lm.out['gt','Estimate']*2)
-	return(c(lm.res,fc))
+	return(lm.out['gt',c(3,4,1)])
 }
