@@ -31,11 +31,16 @@ keepSamples=NULL){
 	genos<-make012(genoInfo$GT)
 	AOs<-apply(genoInfo$AO,2,as.numeric)
 	ROs<-apply(genoInfo$RO,2,as.numeric)
+	BOs<-AOs+ROs
+	AIwt<-voom(BOs)$weights
+	AIwt<-cbind(AIwt,AIwt)
 	AOs[genos!=1]<-NA
 	ROs[genos!=1]<-NA
 	AImat<-cbind(ROs,AOs)
+	AImat<-log2(1000000*t(t(AImat+0.5)/(rep(colSums(BOs),2))))
 	colnames(AImat)<-NULL
 	rownames(AImat)<-rownames(genos)
+	rownames(AIwt)<-rownames(genos)
 	AIdat<-factor(c(rep('ref',ncol(genos)),rep('alt',ncol(genos))),levels=c('ref','alt'))
 
 	cat('organizing SNP info...\n')
@@ -66,6 +71,7 @@ keepSamples=NULL){
 		currexpr<-currexpr[,keep]
 		currweights<-currweights[,keep]
 		AImat<-AImat[,rep(keep,2)]
+		AIwt<-AIwt[,rep(keep,2)]
 		AIdat<-AIdat[rep(keep,2)]
 		genos<-genos[,keep]
 	}
@@ -101,12 +107,20 @@ keepSamples=NULL){
 	}	
 	#subset other data sets after filtering genos
 	AImat<-AImat[rownames(genos),]
+	AIwt<-AIwt[rownames(genos),]
 	currexpr<-currexpr[rownames(genos),]
 	snpInfo<-snpInfo[rownames(genos),]
 	cat(paste(nrow(genos),'sites left after filtering, testing for eQTL status...\n'))
 
-	cat('allelic imbalance test...\n')
-	imb.out<-imbalanceTest(AImat=AImat,AIdat=AIdat)
+	#single-threaded test
+	if(mc.cores==1){	
+		cat('imbalance test...\n')
+		imb.out<-t(sapply(rownames(genos),imbalanceLimmaVoom,AImat=AImat,AIwt=AIwt,AIdat=AIdat))
+	} else{
+	#multithreaded test
+		cat('mulithreaded imbalance test...\n')
+		imb.out<-do.call(rbind,mclapply(rownames(genos),imbalanceLimmaVoom,AImat=AImat,AIwt=AIwt,AIdat=AIdat,mc.cores=mc.cores))
+	}
 	
 	#single-threaded test
 	if(mc.cores==1){	
@@ -122,7 +136,7 @@ keepSamples=NULL){
 	}
 
 	#collect results and calculate p values using Stouffer's method
-	res<-cbind(imb.out[,c('stat','pvalue')],2^imb.out$log2FoldChange,assoc.out)
+	res<-cbind(imb.out,assoc.out)
 	colnames(res)<-c('AIz','AIp','AIfc','ASSOCz','ASSOCp','ASSOCfc')	
 	rownames(res)<-rownames(genos)
 	res<-as.data.frame(res)

@@ -10,6 +10,8 @@ function(AImat,AIdat,fitType=c('parametric','local','mean')){
 	rownames(c.ord)<-rownames(counts)
 	p.ord<-t(sapply(1:nrow(orders),function(i) predictor[i,orders[i,]]))
 	rownames(p.ord)<-rownames(counts)
+	colnames(c.ord)<-NULL
+	colnames(p.ord)<-NULL
 	notAllNA<-apply(p.ord,1,function(v) any(!is.na(v)))
 	c.ord<-c.ord[notAllNA,]
 	p.ord<-p.ord[notAllNA,]
