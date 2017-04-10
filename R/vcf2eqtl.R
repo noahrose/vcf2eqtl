@@ -3,6 +3,7 @@ function(vcf,
 expr,
 pops=NULL,
 minHet=3,
+minHetDP=10,
 mc.cores=1,
 alpha=0.05,
 calculateFst=T,
@@ -33,6 +34,8 @@ transcripts=NULL){
 	BOs<-AOs+ROs
 	AOs[genos!=1]<-NA
 	BOs[genos!=1]<-NA
+	AOs[BOs<minHetDP]<-NA
+	BOs[BOs<minHetDP]<-NA
 
 	rownames(AOs)<-rownames(genos)
 	rownames(BOs)<-rownames(genos)
@@ -85,15 +88,10 @@ transcripts=NULL){
 		}
 		genos<-genos[hwe>hweAlpha,]
 	}
-	if(!is.null(minHet)){
-		cat('filtering out sites with fewer than',minHet,'heterozygotes...\n')
-		numHet<-apply(genos,1,function(v) length(which(v==1)))
-		genos<-genos[numHet>=minHet,]
-	}
 
 	cat('filtering out sites without allele observations\n')
 	alleleObs<-alleleObs[rownames(genos)]
-	imbalanceInfo<-unlist(lapply(alleleObs,function(df) nrow(df)>0))
+	imbalanceInfo<-unlist(lapply(alleleObs,function(df) nrow(df)>minHet))
 	alleleObs<-alleleObs[imbalanceInfo]
 	genos<-genos[names(alleleObs),]
 	if(nrow(genos)==0){
