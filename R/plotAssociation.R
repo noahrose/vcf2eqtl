@@ -16,7 +16,7 @@ function(output,curr,titles=T,plotLegend=T,legendPos=NULL,snpLab=NULL,usecol=NUL
 	abline(lm(ex~gt),lwd=lwd,lty=lty)
 	axis(2)
 	legpos='topleft'
-	if(currsnp$z<0) legpos='topright'
+	if(currsnp$ASSOCz<0) legpos='topright'
 	if(!is.null(legendPos)) legpos=legendPos
 	if(plotLegend) legend(legpos,fill=rainbow(length(levels(pops)),v=0.8),legend=levels(pops),bty='n')
 	axis(1,at=c(0,1,2),labels=c(paste(currsnp['REF'],currsnp['REF'],sep=''),

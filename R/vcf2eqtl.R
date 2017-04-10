@@ -42,7 +42,7 @@ transcripts=NULL){
 	cat('getting reference and alternate observations...\n')
 	alleleObs<-list()
 	for(i in 1:nrow(AOs)){
-		alleleObs[[rownames(genos)[i]]]<-na.omit(data.frame(x=AOs[i,],size=BOs[i,]))
+		alleleObs[[rownames(genos)[i]]]<-na.omit(data.frame(row.names=colnames(genos),x=AOs[i,],size=BOs[i,]))
 	}	
 
 	cat('organizing SNP info...\n')
@@ -89,7 +89,7 @@ transcripts=NULL){
 		genos<-genos[hwe>hweAlpha,]
 	}
 
-	cat('filtering out sites without allele observations\n')
+	cat('filtering out sites without minimum number of informative heterozygotes\n')
 	alleleObs<-alleleObs[rownames(genos)]
 	imbalanceInfo<-unlist(lapply(alleleObs,function(df) nrow(df)>minHet))
 	alleleObs<-alleleObs[imbalanceInfo]
