@@ -184,5 +184,5 @@ transcripts=NULL){
 		res$popDiffExplained[which(res$eQTL)]=propE
 	}
 	
-	return(list(res=res,snpContigExpr=currexpr,genos=genos,AImat=AImat,AIdat=AIdat,globalFst=globalFst,pops=pops,DEres= DEres))
+	return(list(res=res,snpContigExpr=currexpr,genos=genos,alleleObs,globalFst=globalFst,pops=pops,DEres= DEres))
 }
