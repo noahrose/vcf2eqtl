@@ -91,7 +91,7 @@ transcripts=NULL){
 	}
 
 	cat('filtering out sites without allele observations\n')
-	alleleObs<-alleleObs[rownames(genos),]
+	alleleObs<-alleleObs[rownames(genos)]
 	imbalanceInfo<-unlist(lapply(alleleObs,function(df) nrow(df)>0))
 	alleleObs<-alleleObs[imbalanceInfo]
 	genos<-genos[names(alleleObs),]
