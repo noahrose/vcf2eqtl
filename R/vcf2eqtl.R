@@ -33,6 +33,7 @@ transcripts=NULL){
 	BOs<-AOs+ROs
 	AOs[genos!=1]<-NA
 	BOs[genos!=1]<-NA
+
 	rownames(AOs)<-rownames(genos)
 	rownames(BOs)<-rownames(genos)
 	cat('getting reference and alternate observations...\n')
@@ -131,7 +132,7 @@ transcripts=NULL){
 	colnames(res)<-c('AImu','AIp','AIlog2fc','ASSOCz','ASSOCp','ASSOClog2fc')	
 	rownames(res)<-rownames(genos)
 	res<-as.data.frame(res)
-	res$p<-sumlog(c(res$AIp,res$ASSOCp))$p
+	res$p<-apply(cbind(res$AIp,res$ASSOCp),1,function(v) sumlog(v)$p)
 	res$padj<-p.adjust(res$p,method='BH')
 	res$AIpadj<-p.adjust(res$AIp,method='BH')
 	res$ASSOCpadj<-p.adjust(res$ASSOCp,method='BH')
@@ -184,5 +185,5 @@ transcripts=NULL){
 		res$popDiffExplained[which(res$eQTL)]=propE
 	}
 	
-	return(list(res=res,snpContigExpr=currexpr,genos=genos,alleleObs,globalFst=globalFst,pops=pops,DEres= DEres))
+	return(list(res=res,snpContigExpr=currexpr,genos=genos,alleleObs=alleleObs,globalFst=globalFst,pops=pops,DEres= DEres))
 }
