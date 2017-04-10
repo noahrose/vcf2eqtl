@@ -55,10 +55,10 @@ transcripts=NULL){
 	if(is.null(transcripts)) transcripts=CHROM
 	expr<-expr[rownames(expr)%in%transcripts,]
 	designMatrix<-NULL
-	if(withinPop) components='pops'
-	if(!is.null(covariates)) components=c('covariates',components)
+	if(withinPop) dmatComponents ='pops'
+	if(!is.null(covariates)) dmatComponents =c('covariates', dmatComponents)
 	if(!is.null(dmatComponents)){
-		form<-as.formula(paste('~',paste(components,collapse='+')))
+		form<-as.formula(paste('~',paste(dmatComponents,collapse='+')))
 		designMatrix<-model.matrix(form)	
 	}
 	voomExpr<-voom(expr,design=designMatrix)
