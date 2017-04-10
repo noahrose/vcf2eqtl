@@ -131,7 +131,7 @@ transcripts=NULL){
 	colnames(res)<-c('AImu','AIp','AIlog2fc','ASSOCz','ASSOCp','ASSOClog2fc')	
 	rownames(res)<-rownames(genos)
 	res<-as.data.frame(res)
-	res$p<-sumlog(c(res$AIp,res$ASSOCp))
+	res$p<-sumlog(c(res$AIp,res$ASSOCp))$p
 	res$padj<-p.adjust(res$p,method='BH')
 	res$AIpadj<-p.adjust(res$AIp,method='BH')
 	res$ASSOCpadj<-p.adjust(res$ASSOCp,method='BH')
