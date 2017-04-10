@@ -14,8 +14,7 @@ hweAlpha=0.05,
 covariates=NULL,
 propExplained=T,
 withinPop=T,
-transcripts=NULL,
-keepSamples=NULL){
+transcripts=NULL){
 	
 	if(is.null(pops)){
 		calculateFst=F
@@ -32,16 +31,15 @@ keepSamples=NULL){
 	AOs<-apply(genoInfo$AO,2,as.numeric)
 	ROs<-apply(genoInfo$RO,2,as.numeric)
 	BOs<-AOs+ROs
-	AIwt<-voom(BOs)$weights
-	AIwt<-cbind(AIwt,AIwt)
 	AOs[genos!=1]<-NA
-	ROs[genos!=1]<-NA
-	AImat<-cbind(ROs,AOs)
-	AImat<-log2(1000000*t(t(AImat+0.5)/(rep(colSums(BOs),2))))
-	colnames(AImat)<-NULL
-	rownames(AImat)<-rownames(genos)
-	rownames(AIwt)<-rownames(genos)
-	AIdat<-factor(c(rep('ref',ncol(genos)),rep('alt',ncol(genos))),levels=c('ref','alt'))
+	BOs[genos!=1]<-NA
+	rownames(AOs)<-rownames(genos)
+	rownames(BOs)<-rownames(genos)
+	cat('getting reference and alternate observations...\n')
+	alleleObs<-list()
+	for(i in 1:nrow(AOs)){
+		alleleObs[[rownames(genos)[i]]]<-na.omit(data.frame(x=AOs[i,],size=BOs[i,]))
+	}	
 
 	cat('organizing SNP info...\n')
 	CHROM=as.vector(seqnames(rowRanges(currvcf)))
@@ -56,25 +54,19 @@ keepSamples=NULL){
 	#organize and normalize expression data
 	if(is.null(transcripts)) transcripts=CHROM
 	expr<-expr[rownames(expr)%in%transcripts,]
-	voomExpr<-voom(expr)
+	designMatrix<-NULL
+	if(withinPop) components='pops'
+	if(!is.null(covariates)) components=c('covariates',components)
+	if(!is.null(dmatComponents)){
+		form<-as.formula(paste('~',paste(components,collapse='+')))
+		designMatrix<-model.matrix(form)	
+	}
+	voomExpr<-voom(expr,design=designMatrix)
 	rownames(voomExpr$weights)<-rownames(expr)
 	currexpr<-as.matrix(voomExpr$E[transcripts,])
 	currweights<-as.matrix(voomExpr$weights[transcripts,])
 	rownames(currexpr)<-rownames(genos)
 	rownames(currweights)<-rownames(genos)
-	
-	#subset samples if desired
-	if(!is.null(keepSamples)){
-		cat('subsetting to only keep specified samples and assuming pops correspond to post-filtered samples...\n')
-		keep=colnames(genos)%in%keepSamples
-		expr<-expr[,keep]
-		currexpr<-currexpr[,keep]
-		currweights<-currweights[,keep]
-		AImat<-AImat[,rep(keep,2)]
-		AIwt<-AIwt[,rep(keep,2)]
-		AIdat<-AIdat[rep(keep,2)]
-		genos<-genos[,keep]
-	}
 
 	#if desired, filter genotypes	
 	if(all3){
@@ -99,15 +91,14 @@ keepSamples=NULL){
 	}
 
 	cat('filtering out sites without allele observations\n')
-	AImat<-AImat[rownames(genos),]
-	imbalanceInfo<-apply(AImat,1,function(v) any(!is.na(v)))
-	genos<-genos[rownames(AImat)[imbalanceInfo],]
+	alleleObs<-alleleObs[rownames(genos),]
+	imbalanceInfo<-unlist(lapply(alleleObs,function(df) nrow(df)>0))
+	alleleObs<-alleleObs[imbalanceInfo]
+	genos<-genos[names(alleleObs),]
 	if(nrow(genos)==0){
 		stop('No sites left after filtering, check to make sure you have a freebayes VCF of biallelic SNPs with allele observations in it')
 	}	
 	#subset other data sets after filtering genos
-	AImat<-AImat[rownames(genos),]
-	AIwt<-AIwt[rownames(genos),]
 	currexpr<-currexpr[rownames(genos),]
 	snpInfo<-snpInfo[rownames(genos),]
 	cat(paste(nrow(genos),'sites left after filtering, testing for eQTL status...\n'))
@@ -115,11 +106,11 @@ keepSamples=NULL){
 	#single-threaded test
 	if(mc.cores==1){	
 		cat('imbalance test...\n')
-		imb.out<-t(sapply(rownames(genos),imbalanceLimmaVoom,AImat=AImat,AIwt=AIwt,AIdat=AIdat))
+		imb.out<-do.call(rbind,lapply(alleleObs,bbLRT))
 	} else{
 	#multithreaded test
 		cat('mulithreaded imbalance test...\n')
-		imb.out<-do.call(rbind,mclapply(rownames(genos),imbalanceLimmaVoom,AImat=AImat,AIwt=AIwt,AIdat=AIdat,mc.cores=mc.cores))
+		imb.out<-do.call(rbind,mclapply(alleleObs,bbLRT,mc.cores=mc.cores))
 	}
 	
 	#single-threaded test
@@ -137,13 +128,10 @@ keepSamples=NULL){
 
 	#collect results and calculate p values using Stouffer's method
 	res<-cbind(imb.out,assoc.out)
-	colnames(res)<-c('AIz','AIp','AIfc','ASSOCz','ASSOCp','ASSOCfc')	
+	colnames(res)<-c('AImu','AIp','AIlog2fc','ASSOCz','ASSOCp','ASSOClog2fc')	
 	rownames(res)<-rownames(genos)
 	res<-as.data.frame(res)
-	res$z<-(res[,'AIz']+res[,'ASSOCz'])/(2**.5)
-	# res$z[is.na(res$AIz)&!is.na(res$ASSOCz)]<-res$ASSOCz[is.na(res$AIz)&!is.na(res$ASSOCz)]
-	# res$z[!is.na(res$AIz)&is.na(res$ASSOCz)]<-res$ASSOCz[!is.na(res$AIz)&is.na(res$ASSOCz)]
-	res$p<-sapply(res$z,function(val) min(pnorm(val,lower.tail=T),pnorm(val,lower.tail=F))*2)
+	res$p<-sumlog(c(res$AIp,res$ASSOCp))
 	res$padj<-p.adjust(res$p,method='BH')
 	res$AIpadj<-p.adjust(res$AIp,method='BH')
 	res$ASSOCpadj<-p.adjust(res$ASSOCp,method='BH')

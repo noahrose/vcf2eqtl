@@ -1,16 +1,16 @@
 \name{vcf2eqtl}
 \alias{vcf2eqtl}
 \alias{associationTest}
-\alias{DEbin}
 \alias{flattenOutput}
-\alias{imbalanceTest}
 \alias{make012}
-\alias{makeHierfstat}
 \alias{plotAssociation}
 \alias{plotCline}
 \alias{plotImbalance}
 \alias{plotQTL}
-\alias{propExplan}
+\alias{propExplain}
+\alias{bbFull}
+\alias{bbNull}
+\alias{bbLRT}
 \alias{vcf2eqtl-package}
 
 \title{
@@ -19,9 +19,9 @@ Function to detect eQTLs using vcf and expression matrix from a transcriptome re
 \description{
 A simple pipeline that takes a freebayes vcf file of biallelic SNPs and an 
 expression matrix in DESeq format and uses two different tests to detect eQTLs.
-First, we test for allelic imbalance in heterozygous individuals using DESeq2.
-Overdispersion in read counts is modeled by testing all sites with a given number of
-heterozygotes together in a single DESeq2 run. Next, we use limma/voom to log transform
+First, we test for allelic imbalance in heterozygous individuals by fitting a beta-
+binomial distribution for imbalance at each locus and using a likelihood ratio
+test for deviation from 50-50. Next, we use limma/voom to log transform
 and calculate precision weights for expression values and use lm to test for associations
 between genotype and expression. P values are calculated using Stouffer's method.
 Fst and Fst outliers (OutFLANK), Differential expression between populations (DESeq2), 
