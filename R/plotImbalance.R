@@ -8,7 +8,7 @@ function(output,curr,titles=T,usecol=NULL,geneName=NULL,pops=NULL){
 	}
 	currsnp<-output$res[curr,]
 	if(!is.null(usecol)) cols= usecol
-	names(cols)<-colnames(genos)
+	names(cols)<-colnames(output$genos)
 	obs<-output$alleleObs[[curr]]
 	AIs<-cbind(obs[,2]-obs[,1],obs[,1])
 	c1=cols[rownames(obs)]
