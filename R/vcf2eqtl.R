@@ -50,7 +50,8 @@ transcripts=NULL){
 	POS=as.numeric(as.character(start(ranges(rowRanges(currvcf)))))
 	REF=as.character(mcols(rowRanges(currvcf))[,'REF'])
 	ALT=as.character(unlist(mcols(rowRanges(currvcf))[,'ALT']))
-	AF=unlist(info(currvcf)$AF)
+	#recalculate in case of user subsetting prior to input
+	AF=apply(genos,1,mean,na.rm=T)/2
 	snpInfo<-cbind(CHROM,POS,REF,ALT,AF)
 	rownames(snpInfo)<-rownames(genos)
 
