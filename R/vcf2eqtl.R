@@ -59,6 +59,7 @@ transcripts=NULL){
 	if(is.null(transcripts)) transcripts=CHROM
 	expr<-expr[rownames(expr)%in%transcripts,]
 	designMatrix<-NULL
+	dmatComponents<-NULL
 	if(withinPop) dmatComponents ='pops'
 	if(!is.null(covariates)) dmatComponents =c('covariates', dmatComponents)
 	if(!is.null(dmatComponents)){
