@@ -145,7 +145,9 @@ transcripts=NULL){
 	#calculate Fst and call outliers using OutFLANK
 	if(calculateFst){
 		cat('calculating Fst...\n')
-		wc.out<-MakeDiploidFSTMat(t(genos),rownames(genos),pops)
+		genosOutFLANK=genos
+		genosOutFLANK[is.na(genosOutFLANK)]<-9
+		wc.out<-MakeDiploidFSTMat(t(genosOutFLANK),rownames(genos),pops)
 		res$Fst=wc.out$FST
 		res$FstNum<-wc.out$T1
 		res$FstDen<-wc.out$T2
