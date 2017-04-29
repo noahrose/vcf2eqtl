@@ -15,6 +15,7 @@ hweAlpha=0.05,
 covariates=NULL,
 propExplained=T,
 withinPop=T,
+format='bcftools',
 transcripts=NULL){
 	
 	if(is.null(pops)){
@@ -29,13 +30,24 @@ transcripts=NULL){
 	currvcf<-suppressWarnings(readVcf(vcf,genome='curr'))
 	genoInfo<-geno(currvcf)
 	genos<-make012(genoInfo$GT)
-	AOs<-apply(genoInfo$AO,2,as.numeric)
-	ROs<-apply(genoInfo$RO,2,as.numeric)
-	BOs<-AOs+ROs
-	AOs[genos!=1]<-NA
-	BOs[genos!=1]<-NA
-	AOs[BOs<minHetDP]<-NA
-	BOs[BOs<minHetDP]<-NA
+	
+	if(format=='freebayes'){
+		AOs<-apply(genoInfo$AO,2,as.numeric)
+		ROs<-apply(genoInfo$RO,2,as.numeric)
+	} else if (format=='bcftools'){
+		ad<-apply(geno(currvcf)$AD,c(1,2),function(l) l[[1]])
+		ROs<-ad[1,,]
+		AOs<-ad[2,,]
+	} else{
+		stop('format must be either bcftools or freebayes')
+	}
+	
+		BOs<-AOs+ROs
+		AOs[genos!=1]<-NA
+		BOs[genos!=1]<-NA
+		AOs[BOs<minHetDP]<-NA
+		BOs[BOs<minHetDP]<-NA
+	
 
 	rownames(AOs)<-rownames(genos)
 	rownames(BOs)<-rownames(genos)
