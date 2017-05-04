@@ -62,7 +62,7 @@ transcripts=NULL){
 	POS=as.numeric(as.character(start(ranges(rowRanges(currvcf)))))
 	REF=as.character(mcols(rowRanges(currvcf))[,'REF'])
 	ALT=as.character(unlist(mcols(rowRanges(currvcf))[,'ALT']))
-	AF=unlist(info(currvcf)$AF)
+	AF=as.numeric(unlist(info(currvcf)$AC))/as.numeric(unlist(info(currvcf)$AN))
 	snpInfo<-cbind(CHROM,POS,REF,ALT,AF)
 	rownames(snpInfo)<-rownames(genos)
 
