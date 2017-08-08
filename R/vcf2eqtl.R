@@ -138,14 +138,18 @@ transcripts=NULL){
 			withinPop=withinPop,mc.cores=mc.cores))
 	}
 
-	#collect results and calculate p values using Stouffer's method
+	#collect results and calculate p values using Fisher's method
 	res<-cbind(imb.out,assoc.out)
 	colnames(res)<-c('AImu','AIp','AIlog2fc','ASSOCz','ASSOCp','ASSOClog2fc')	
 	rownames(res)<-rownames(genos)
 	res<-as.data.frame(res)
 	#compare alternate homozygotes for fc
+	combineP<-function(v){
+		if(NA%in%v) return(NA)
+		return(sumlog(v)$p)
+	}
 	res$ASSOClog2fc<-2*res$ASSOClog2fc
-	res$p<-apply(cbind(res$AIp,res$ASSOCp),1,function(v) sumlog(v)$p)
+	res$p<-apply(cbind(res$AIp,res$ASSOCp),1,combineP)
 	res$padj<-p.adjust(res$p,method='BH')
 	res$AIpadj<-p.adjust(res$AIp,method='BH')
 	res$ASSOCpadj<-p.adjust(res$ASSOCp,method='BH')
