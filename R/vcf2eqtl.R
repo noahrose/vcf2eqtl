@@ -30,6 +30,7 @@ transcripts=NULL){
 	currvcf<-suppressWarnings(readVcf(vcf,genome='curr'))
 	genoInfo<-geno(currvcf)
 	genos<-make012(genoInfo$GT)
+	cat(paste('vcf contains',nrow(genos),'variants'))
 	
 	if(format=='freebayes'){
 		AOs<-apply(genoInfo$AO,2,as.numeric)
@@ -52,9 +53,11 @@ transcripts=NULL){
 	rownames(AOs)<-rownames(genos)
 	rownames(BOs)<-rownames(genos)
 	cat('getting reference and alternate observations...\n')
-	alleleObs<-list()
+	alleleObs<-vector('list',nrow(genos))
+	names(alleleObs)<-rownames(genos)
 	for(i in 1:nrow(AOs)){
-		alleleObs[[rownames(genos)[i]]]<-na.omit(data.frame(row.names=colnames(genos),x=AOs[i,],size=BOs[i,]))
+		if(i%%10000==0) cat(paste(i,'\n'))
+		alleleObs[[i]]<-na.omit(data.frame(row.names=colnames(genos),x=AOs[i,],size=BOs[i,]))
 	}	
 
 	cat('organizing SNP info...\n')
