@@ -30,7 +30,7 @@ transcripts=NULL){
 	currvcf<-suppressWarnings(readVcf(vcf,genome='curr'))
 	genoInfo<-geno(currvcf)
 	genos<-make012(genoInfo$GT)
-	cat(paste('vcf contains',nrow(genos),'variants'))
+	cat(paste('vcf contains',nrow(genos),'variants\n'))
 	
 	if(format=='freebayes'){
 		AOs<-apply(genoInfo$AO,2,as.numeric)
