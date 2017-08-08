@@ -66,7 +66,7 @@ transcripts=NULL){
 	REF=as.character(mcols(rowRanges(currvcf))[,'REF'])
 	ALT=as.character(unlist(mcols(rowRanges(currvcf))[,'ALT']))
 	AF=as.numeric(unlist(info(currvcf)$AC))/as.numeric(unlist(info(currvcf)$AN))
-	snpInfo<-cbind(CHROM,POS,REF,ALT,AF)
+	snpInfo<-data.frame(CHROM=CHROM,POS=POS,REF=REF,ALT=ALT,AF=AF)
 	rownames(snpInfo)<-rownames(genos)
 
 	cat('organizing expression data...\n')
@@ -158,9 +158,6 @@ transcripts=NULL){
 	res$ASSOCpadj<-p.adjust(res$ASSOCp,method='BH')
 	res$eQTL<-res$padj<alpha
 	res<-cbind(snpInfo,res)
-	res$REF<-as.character(res$REF)
-	res$ALT<-as.character(res$ALT)
-	res$POS<-as.numeric(as.character(res$POS))
 	
 	#calculate Fst and call outliers using OutFLANK
 	if(calculateFst){
