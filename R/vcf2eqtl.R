@@ -66,7 +66,7 @@ transcripts=NULL){
 	REF=as.character(mcols(rowRanges(currvcf))[,'REF'])
 	ALT=as.character(unlist(mcols(rowRanges(currvcf))[,'ALT']))
 	AF=as.numeric(unlist(info(currvcf)$AC))/as.numeric(unlist(info(currvcf)$AN))
-	snpInfo<-data.frame(CHROM=CHROM,POS=POS,REF=REF,ALT=ALT,AF=AF)
+	snpInfo<-data.frame(CHROM=CHROM,POS=POS,REF=REF,ALT=ALT,AF=AF,stringsAsFactors=F)
 	rownames(snpInfo)<-rownames(genos)
 
 	cat('organizing expression data...\n')

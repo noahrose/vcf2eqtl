@@ -1,11 +1,14 @@
 plotAssociation <-
-function(output,curr,titles=T,plotLegend=T,legendPos=NULL,snpLab=NULL,usecol=NULL,geneName=NULL,lty=2,lwd=2,pops=NULL){
+function(output,curr,titles=T,plotLegend=T,legendPos=NULL,snpLab=NULL,usecol=NULL,geneName=NULL,lty=2,lwd=2,pops=NULL,residual=T){
 	if(is.null(pops)){pops=output$pops}
 	if(is.null(pops)) {
 		plotLegend=F
 		cols=rep('black',ncol(output$genos))
 	}
 	ex=output$snpContigExpr[curr,]
+	if(residual){
+		ex<-scale(lm(ex~pops)$residuals)
+	}
 	gt=output$genos[curr,]
 	currsnp<-output$res[curr,]
 	if(!is.null(pops)) cols=rainbow(length(levels((pops))),v=0.8)[as.numeric((pops))]
